@@ -44,9 +44,13 @@ class AgentLoop:
         self.system_prompt = system_prompt
         self.on_event = on_event or (lambda e: None)
         self.max_inner_iterations = max_inner_iterations
+        self._events_out: list[Event] | None = None
 
     def _emit(self, etype: str, **data) -> None:
-        self.on_event(Event(type=etype, data=data))
+        event = Event(type=etype, data=data)
+        self.on_event(event)
+        if self._events_out is not None:
+            self._events_out.append(event)
 
     def _context(self, messages: list[dict]) -> list[dict]:
         return [{"role": "system", "content": self.system_prompt}, *messages]
@@ -110,8 +114,15 @@ class AgentLoop:
                 terminate = True
         return backfills, terminate
 
-    def run_turn(self, user_input: str, messages: list[dict] | None = None) -> LLMResponse:
+    def run_turn(self, user_input: str, messages: list[dict] | None = None, events_out: list[Event] | None = None) -> LLMResponse:
         """一次外环迭代：处理一条用户输入，产出完整回复（含内环）."""
+        self._events_out = events_out
+        try:
+            return self._run_turn_impl(user_input, messages)
+        finally:
+            self._events_out = None
+
+    def _run_turn_impl(self, user_input: str, messages: list[dict] | None) -> LLMResponse:
         messages = messages or []
         cleaned = self.outer_filter.filter(user_input)
         self._emit("turn_start", input_len=len(cleaned))

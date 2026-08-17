@@ -134,6 +134,8 @@ global/agents.md   ← 全局常项（最低）
 | skills 目录加载 | 未落地 | 开源版裁剪，待 P3 |
 | 系统提示词 | 已落地 | `prompts/system.md` + 运行时 config 摘要注入 |
 | 工具白名单 | 已落地 | `tools.py::build_tools`（memory_write/memory_read/exit_session） |
+| 本地 Web 版 | 已落地 | `web.py::serve` + `web/index.html`，自托管 localhost |
+| npm/TS 重写 | 蓝图 | 浏览器原生/打包 Electron，开源版范围外 |
 
 ---
 
