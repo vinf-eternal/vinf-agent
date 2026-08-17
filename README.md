@@ -8,6 +8,8 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/vinf-agent.svg)](https://pypi.org/project/vinf-agent/)
 
 > **PyPI**: https://pypi.org/project/vinf-agent/ ｜ **GitHub**: https://github.com/vinf-eternal/vinf-agent
+>
+> 文档：**[FAQ](FAQ.md)**（模型兼容 / 跨局域网访问 / 记忆持久化）· **[CHANGELOG](CHANGELOG.md)**（迭代节点）
 
 ---
 
