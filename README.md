@@ -67,7 +67,7 @@ powershell -ExecutionPolicy Bypass -File install.ps1   # 创建 %LOCALAPPDATA%\b
 vinf-agent --web      # 启动本地 Web 版
 ```
 
-> 需要 Python 3.10+（本机已装即可，项目零第三方依赖）。测试：`python -m pytest tests`（32 tests）。
+> 需要 Python 3.10+（本机已装即可，项目零第三方依赖）。测试：`python -m pytest tests`（58 tests）。
 
 ## 目录结构
 
@@ -84,6 +84,8 @@ vinf-agent/
 │   ├── ARCHITECTURE.md    # 设计架构图（单黑盒拓扑 + 双层循环）
 │   ├── DUAL_LOOP.md       # 双层循环详解（外环交互 + 内环工具）
 │   └── AUDIT.md           # 设计审计记录
+├── skills/                # 内置 Skill（鬼谷子/苏格拉底/曹操）
+├── plugins/               # 插件示例（MCP 桥接等）
 ├── config.example/
 │   ├── global/
 │   │   └── agents.md      # 全局常项（人设/记忆规则/行为边界）
@@ -94,7 +96,7 @@ vinf-agent/
 │   └── system.md          # 系统提示词
 ├── src/
 │   └── vinf_agent/        # 核心代码
-│       ├── __main__.py    # CLI 入口（--config / --web）
+│       ├── __main__.py    # CLI 入口（--config / --web / --skill-dir 等）
 │       ├── agent_loop.py  # 双层循环内核
 │       ├── bootstrap.py   # 组件装配（CLI/Web 共享）
 │       ├── web.py         # 本地 Web 版（stdlib http.server）
@@ -102,10 +104,66 @@ vinf-agent/
 │       ├── config.py      # 三层配置读取 + append_system
 │       ├── memory_gate.py # B_in 记忆读写门
 │       ├── filter.py      # B_out 外层过滤
+│       ├── skills.py      # Skill 加载（SKILL.md + frontmatter）
+│       ├── plugins.py     # 插件加载（register(api) 协议）
+│       ├── mcp_client.py  # 轻量 MCP 客户端（stdio JSON-RPC）
+│       ├── onboarding.py  # 首次会话用户档案引导（agents.md 账本）
 │       ├── tools.py       # 工具白名单
 │       └── llm.py         # OpenAI 兼容客户端
-└── tests/                 # 32 tests
+└── tests/                 # 58 tests
 ```
+
+## Skill 系统（角色加载）
+
+把 SKILL.md（含 `name` / `description` frontmatter）放进 `<config>/skills/` 子目录，启动时自动加载并注入系统提示词。仓库内置三个角色：
+
+| Skill | 角色 | 风格 |
+|-------|------|------|
+| 鬼谷子 | 纵横捭阖 | 揣情摩意、先纵后横 |
+| 苏格拉底 | 产婆术 | 连续追问、逼出前提 |
+| 曹操 | 务实决断 | 目标优先、结果导向 |
+
+```bash
+python run.py --config config --skill-dir skills   # 加载 skills/ 目录
+python run.py --list-skills                         # 列出可用 skill
+```
+
+自定义 Skill：新建 `skills/你的角色/SKILL.md`，frontmatter 写 `name` + `description`，正文写角色规则（`enable: false` 可临时禁用）。
+
+## 插件系统 + MCP 接口
+
+零依赖插件协议（对齐 Pi 的 `ExtensionAPI`）：插件 = `plugins/` 目录下带 `register(api)` 函数的 `.py` 文件。
+
+```python
+# plugins/my_plugin.py
+from vinf_agent.tools import ToolResult
+
+def register(api):
+    def fn(args):
+        return ToolResult(tool="echo", ok=True, output=args.get("text", ""))
+    api.register_tool("echo", fn, description="回显")
+    api.register_prompt("本会话已装载 echo 工具。")
+```
+
+- `api.register_tool(name, fn, description, parameters)` —— 注册新工具进白名单；
+- `api.register_prompt(text)` —— 追加系统提示词；
+- 内置示例：`plugins/mcp_bridge.py` —— 把外部 MCP 服务器（stdio + JSON-RPC 2.0，如 `@modelcontextprotocol/server-filesystem`）的工具桥接进工具白名单；
+- 缺失命令的 MCP 服务器自动跳过，不影响整体启动。
+
+```bash
+python run.py --config config --plugin-dir plugins
+python run.py --list-plugins                        # 列出插件与已注册工具
+```
+
+## 首次会话引导（Onboarding）
+
+首次启动时主动向你提问 ≥5 项用户偏好（称呼 / 人格 / 技能 / 编程熟悉度 / 是否需要大白话 / 领域），写入 `global/agents.md` 的「用户档案」段，作为长期静态基线注入系统提示词（对齐望易「人格元调度 → issues 机制」）：
+
+- **agents.md 即进度账本**：无需独立状态数据库；按字段完整性自动判定 未启动 / 断点续引导 / 已完成；
+- **三态契约**：字段行缺失 → 续问；`（未填）` 占位 → 主动跳过不追问；非空 → 已完成；
+- **断点续引导**：中途中断，下次启动从缺失字段继续，不重头问；
+- **敏感项**（技能 / 编程熟悉度 / 领域）提示可跳过，私有内容请走 `memory/`；
+- **重采**：`python run.py --restart-onboard` 全量重问覆盖。
 
 ## 配置分层（旁路由）
 
@@ -146,7 +204,10 @@ python -m vinf_agent --config config --web [--port 8787] [--host 127.0.0.1]
 | P2 | 记忆读写门（B_in 隔离） | 已落地 |
 | P3 | 外层过滤（B_out） | 已落地 |
 | P3 | 本地 Web 版（自托管聊天界面） | 已落地 |
-| P3 | skills 目录加载 | 未落地 |
+| P3 | skills 目录加载（鬼谷子/苏格拉底/曹操） | 已落地 |
+| P3 | 插件系统（register(api) 协议） | 已落地 |
+| P3 | MCP 客户端桥接（stdio JSON-RPC） | 已落地 |
+| P3 | Onboarding 首次引导（agents.md 状态机账本） | 已落地 |
 | P3 | 零安装入口 + 一键安装脚本 | 已落地 |
 | 蓝图 | npm/TypeScript 重写（浏览器原生） | 蓝图 |
 | PyPI | 发布 vinf-agent（pipx/pip 安装） | 已落地 |
@@ -157,7 +218,7 @@ V∞ 体系按信息发布层级（公开层 Ω=0 / 论文层 Ω=1 / 内部层 �
 
 | 版本 | 定位 | 功能范围 | 交付方式 |
 |------|------|---------|---------|
-| **开源版**（本仓库） | 个人认知外延系统·轻量 | 双层循环、三层配置 + append_system 热补丁、记忆读写门（B_in 隔离）、外层过滤（B_out）、本地 Web 版、零安装部署 | PyPI + GitHub 公开，MIT |
+| **开源版**（本仓库） | 个人认知外延系统·轻量 | 双层循环、三层配置 + append_system 热补丁、记忆读写门（B_in 隔离）、外层过滤（B_out）、本地 Web 版、Skill 角色加载、插件 + MCP 桥接、Onboarding 用户档案引导、零安装部署 | PyPI + GitHub 公开，MIT |
 | **科研版** | 认知架构实证研究 | 三轨审计链（演绎/归纳/相变）、临界慢化检测、相变三联检测、跨域同构验证、预注册实验规范（E1-E4）、证伪熔断 | 论文 / 白皮书公开，含方法论但不含核心校准参数 |
 | **商业版** | 技术捷径权交付 | 外部标定管线（rh_traversal）、领域专属 B/γ 校准、跨域标定基线、受控 POC 插件、Token/成本预算熔断 | 签约后受控交付，源码不出库 |
 
@@ -180,4 +241,4 @@ MIT。内核方法论属于你，代码属于社区。
 
 ---
 
-*本文档版本: 0.1 | 开发态 | 设计审计通过（docs/AUDIT.md）*
+*本文档版本: 0.2 | v0.3.1 | skill/plugin/MCP/onboarding 已落地, 58 tests 通过*
