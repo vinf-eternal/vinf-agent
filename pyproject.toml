@@ -10,6 +10,10 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 
+[project.urls]
+Homepage = "https://github.com/vinf-eternal/vinf-agent"
+Repository = "https://github.com/vinf-eternal/vinf-agent"
+
 [project.scripts]
 vinf-agent = "vinf_agent.__main__:main"
 
