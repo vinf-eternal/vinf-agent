@@ -161,6 +161,10 @@ V∞ 体系按信息发布层级（公开层 Ω=0 / 论文层 Ω=1 / 内部层 �
 
 **三版同源**：共用同一套 V∞ 底层公理（M33 双层势垒 / C-01 模态上限 / C-02 审计纪律），开源版是科研版与商业版的工程基础；商业版与科研版在开源版之上叠加受控能力，不改动内核骨架。
 
+## 致谢（Acknowledgements）
+
+- **Pi**（https://pi.dev · Mario Zechner，MIT）—— 双层循环设计（外层 steering 交互循环 + 内层工具调用循环）与事件流命名（agent_start/turn_start/tool_result/turn_end/agent_end）参考自 Pi 的 `runLoop` 实现。Vinf Agent 的实现为独立 Python 代码，仅借鉴其循环语义与 length-stop 防残缺执行的工程思路。
+
 ## 联系方式
 
 - 邮箱：wayne777@email.cn
