@@ -22,33 +22,48 @@ Vinf Agent 是 V∞ 体系的**开源版**落地。它不承诺「智能涌现�
 
 ```bash
 # 1. 克隆
-git clone https://github.com/vinf-eternal/vinf-agent.git
+git clone https://github.com/yourname/vinf-agent.git
 cd vinf-agent
 
 # 2. 复制配置模板
 cp -r config.example config
 
-# 3. 安装（src 布局）
-pip install -e .
-
-# 4. 配置你的 API key（模型 = 外网耗材，随意更换）
+# 3. 配置你的 API key（模型 = 外网耗材，随意更换）
 #   编辑 config/global/agents.md 设置人设、记忆规则、行为边界
 
-# 5. 运行（CLI）
-python -m vinf_agent --config config
-
-# 6. 运行（本地 Web 版）——自托管，浏览器连 localhost
-python -m vinf_agent --config config --web --port 8787
-# 打开 http://127.0.0.1:8787
+# 4. 运行（零安装，无需 pip install —— 纯 stdlib）
+python run.py --config config            # CLI 模式
+python run.py --config config --web      # 本地 Web 版，浏览器开 http://127.0.0.1:8787
 ```
 
-> 需要 Python 3.10+。测试：`python -m pytest tests`（32 tests）。
+### 一行安装（可选，体验 = `npx pi`）
+
+把 `bin/` 加入 PATH 后，任意目录直接执行 `vinf-agent`：
+
+```bash
+# macOS / Linux
+./install.sh          # 软链 bin/vinf-agent 到 ~/.local/bin
+
+# Windows
+powershell -ExecutionPolicy Bypass -File install.ps1   # 创建 %LOCALAPPDATA%\bin\vinf-agent.cmd
+
+# 之后任意位置：
+vinf-agent --web      # 启动本地 Web 版
+```
+
+> 需要 Python 3.10+（本机已装即可，项目零第三方依赖）。测试：`python -m pytest tests`（32 tests）。
 
 ## 目录结构
 
 ```
 vinf-agent/
 ├── README.md              # 本文件
+├── run.py                 # 零安装入口（python run.py）
+├── install.sh             # 一键安装（macOS/Linux）
+├── install.ps1            # 一键安装（Windows）
+├── bin/
+│   ├── vinf-agent         # PATH 启动器（POSIX）
+│   └── vinf-agent.cmd     # PATH 启动器（Windows）
 ├── docs/
 │   ├── ARCHITECTURE.md    # 设计架构图（单黑盒拓扑 + 双层循环）
 │   ├── DUAL_LOOP.md       # 双层循环详解（外环交互 + 内环工具）
@@ -116,7 +131,9 @@ python -m vinf_agent --config config --web [--port 8787] [--host 127.0.0.1]
 | P3 | 外层过滤（B_out） | 已落地 |
 | P3 | 本地 Web 版（自托管聊天界面） | 已落地 |
 | P3 | skills 目录加载 | 未落地 |
+| P3 | 零安装入口 + 一键安装脚本 | 已落地 |
 | 蓝图 | npm/TypeScript 重写（浏览器原生） | 蓝图 |
+| 蓝图 | PyPI 发布（pipx install vinf-agent） | 蓝图 |
 
 ## 许可证
 

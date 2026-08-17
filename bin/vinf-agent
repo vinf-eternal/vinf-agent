@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# Vinf Agent · 零安装启动器（macOS/Linux）
+# 用法：把本文件所在目录加入 PATH，之后任意位置执行 `vinf-agent [参数]`
+# 或：ln -s "$(pwd)/bin/vinf-agent" /usr/local/bin/vinf-agent
+set -e
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+exec python3 "$SCRIPT_DIR/../run.py" "$@"
