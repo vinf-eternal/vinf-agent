@@ -8,7 +8,7 @@ from __future__ import annotations
 import json
 import urllib.request
 from dataclasses import dataclass, field
-from typing import Any, Protocol
+from typing import Any, Callable, Protocol
 
 
 @dataclass
@@ -31,13 +31,28 @@ class LLMClient(Protocol):
 
 @dataclass
 class OpenAIClient:
-    """OpenAI 兼容 chat/completions 客户端（零依赖，urllib 实现）."""
+    """OpenAI 兼容 chat/completions 客户端（零依赖，urllib 实现）.
 
-    api_key: str
+    extra_body 透传厂商专属参数（对齐 OpenAI SDK 的 extra_body 语义），
+    例如 reasoning 模型需要 `{"chat_template_kwargs": {"enable_thinking": True}}`。
+    key_resolver 对齐 pi 的 getApiKey：每次请求前调用，支持过期 token 动态刷新
+    （如 OAuth 订阅型服务的短期 access token）。
+    """
+
+    api_key: str = ""
     base_url: str = "https://api.openai.com/v1"
     model: str = "gpt-4o-mini"
     max_tokens: int = 2048
     temperature: float = 0.7
+    extra_body: dict | None = None
+    key_resolver: Any | None = None
+
+    def _resolve_key(self) -> str:
+        if self.key_resolver is not None:
+            resolved = self.key_resolver()
+            if resolved:
+                return resolved
+        return self.api_key
 
     def call(self, messages: list[dict]) -> LLMResponse:
         payload = {
@@ -46,12 +61,15 @@ class OpenAIClient:
             "max_tokens": self.max_tokens,
             "temperature": self.temperature,
         }
+        if self.extra_body:
+            payload.update(self.extra_body)
+        api_key = self._resolve_key()
         req = urllib.request.Request(
             f"{self.base_url.rstrip('/')}/chat/completions",
             data=json.dumps(payload).encode("utf-8"),
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {self.api_key}",
+                "Authorization": f"Bearer {api_key}",
             },
             method="POST",
         )

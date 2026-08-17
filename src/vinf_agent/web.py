@@ -113,6 +113,10 @@ def serve(
     memory_dir: Path | None = None,
     skill_dir: Path | None = None,
     plugin_dir: Path | None = None,
+    extra_body: dict | None = None,
+    max_tokens: int = 2048,
+    provider: str | None = None,
+    api_key_cmd: str | None = None,
 ) -> VinfHTTPServer:
     """启动本地 Web 版；返回 server，调用方负责 serve_forever."""
     loop, config, _gate, _tools = build_agent(
@@ -123,6 +127,10 @@ def serve(
         memory_dir=memory_dir,
         skill_dir=skill_dir,
         plugin_dir=plugin_dir,
+        extra_body=extra_body,
+        max_tokens=max_tokens,
+        provider=provider,
+        api_key_cmd=api_key_cmd,
     )
     return VinfHTTPServer(
         (host, port), loop=loop, config_sources=config.sources, model=model
