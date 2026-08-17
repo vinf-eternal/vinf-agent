@@ -111,6 +111,8 @@ def serve(
     model: str = "gpt-4o-mini",
     base_url: str = "https://api.openai.com/v1",
     memory_dir: Path | None = None,
+    skill_dir: Path | None = None,
+    plugin_dir: Path | None = None,
 ) -> VinfHTTPServer:
     """启动本地 Web 版；返回 server，调用方负责 serve_forever."""
     loop, config, _gate, _tools = build_agent(
@@ -119,6 +121,8 @@ def serve(
         model=model,
         base_url=base_url,
         memory_dir=memory_dir,
+        skill_dir=skill_dir,
+        plugin_dir=plugin_dir,
     )
     return VinfHTTPServer(
         (host, port), loop=loop, config_sources=config.sources, model=model

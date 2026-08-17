@@ -108,6 +108,14 @@ def _parse_md(path: Path) -> AgentConfig:
                 k, sep, v = line.partition("：" if "：" in line else ":")
                 k = k.lstrip("-").strip()
                 cfg.project_context[k] = v.strip()
+    for key in ("用户档案", "user profile"):
+        for line in sections.get(key, []):
+            if "：" in line or ":" in line:
+                k, sep, v = line.partition("：" if "：" in line else ":")
+                k = k.lstrip("-").strip()
+                value = v.strip()
+                if value and value != "（未填）":
+                    cfg.project_context[f"user:{k}"] = value
     cfg.project_rules = _bullets("项目级规则") or _bullets("project rules")
     cfg.appendix = [l.lstrip("-").strip() for l in sections.get("临时规则", []) if l.startswith("-")]
     return cfg
