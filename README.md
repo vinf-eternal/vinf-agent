@@ -4,6 +4,10 @@
 > **一句话**：把你的方法论编译成一套跨模型可复现的本地规则，模型只是外网耗材，规则才是你的本地主权。
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/vinf-agent.svg)](https://pypi.org/project/vinf-agent/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/vinf-agent.svg)](https://pypi.org/project/vinf-agent/)
+
+> **PyPI**: https://pypi.org/project/vinf-agent/ ｜ **GitHub**: https://github.com/vinf-eternal/vinf-agent
 
 ---
 
@@ -20,6 +24,16 @@ Vinf Agent 是 V∞ 体系的**开源版**落地。它不承诺「智能涌现�
 
 ## 快速开始
 
+**一行安装（推荐，体验 = `npx pi`）：**
+
+```bash
+pipx install vinf-agent        # 或：pip install vinf-agent
+vinf-agent --web               # 启动本地 Web 版，浏览器开 http://127.0.0.1:8787
+vinf-agent                     # 或 CLI 模式
+```
+
+**从源码运行（零安装，纯 stdlib）：**
+
 ```bash
 # 1. 克隆
 git clone https://github.com/vinf-eternal/vinf-agent.git
@@ -31,9 +45,9 @@ cp -r config.example config
 # 3. 配置你的 API key（模型 = 外网耗材，随意更换）
 #   编辑 config/global/agents.md 设置人设、记忆规则、行为边界
 
-# 4. 运行（零安装，无需 pip install —— 纯 stdlib）
+# 4. 运行（无需 pip install）
 python run.py --config config            # CLI 模式
-python run.py --config config --web      # 本地 Web 版，浏览器开 http://127.0.0.1:8787
+python run.py --config config --web      # 本地 Web 版
 ```
 
 ### 一行安装（可选，体验 = `npx pi`）
