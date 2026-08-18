@@ -9,3 +9,4 @@ venv/
 .pytest_cache/
 .idea/
 .vscode/
+selfloop_mcp_data/

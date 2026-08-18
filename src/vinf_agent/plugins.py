@@ -22,6 +22,7 @@ class PluginLoadResult:
     loaded: list[str] = field(default_factory=list)
     failed: list[str] = field(default_factory=list)
     prompt_parts: list[str] = field(default_factory=list)
+    plugin_prompts: dict[str, list[str]] = field(default_factory=dict)
 
 
 class PluginAPI:
@@ -80,6 +81,8 @@ def load_plugins(plugin_dir: Path, registry: ToolRegistry) -> PluginLoadResult:
             register(api)
             result.loaded.append(py.name)
             result.prompt_parts.extend(api.prompt_parts)
+            if api.prompt_parts:
+                result.plugin_prompts[py.stem] = list(api.prompt_parts)
         except Exception as e:  # noqa: BLE001
             result.failed.append(f"{py.name}: {e}")
             result.failed.append(traceback.format_exc(limit=2))

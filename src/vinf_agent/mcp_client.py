@@ -48,8 +48,19 @@ class MCPClient:
             encoding="utf-8",
         )
         self._rpc("initialize", {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "vinf-agent", "version": "0.3.0"}})
-        self._rpc("notifications/initialized", {})
+        self._notify("notifications/initialized", {})
         self._initialized = True
+
+    def _notify(self, method: str, params: dict) -> None:
+        """发送 JSON-RPC 通知（无 id，服务器不响应，不能 readline 等待）."""
+        if self._proc is None:
+            raise MCPError(f"MCP 服务器 {self.name} 未启动")
+        with self._lock:
+            req = {"jsonrpc": "2.0", "method": method, "params": params}
+            line = json.dumps(req, ensure_ascii=False) + "\n"
+            assert self._proc.stdin is not None
+            self._proc.stdin.write(line)
+            self._proc.stdin.flush()
 
     def _rpc(self, method: str, params: dict) -> Any:
         if self._proc is None:

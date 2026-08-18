@@ -121,6 +121,22 @@ def build_parser() -> argparse.ArgumentParser:
         default=os.environ.get("VINF_CREDENTIAL_DIR", ""),
         help="OAuth 凭据目录（默认 ~/.vinf/credentials）",
     )
+    p.add_argument(
+        "--routes",
+        default=os.environ.get("VINF_ROUTES", ""),
+        help="路由矩阵 JSON 文件（默认 <config>/routes.json；声明 agent/MCP/skill/plugin 四列统一调度）",
+    )
+    p.add_argument(
+        "--mcp-server",
+        action="append",
+        default=[],
+        help="追加 MCP server（格式 name=command,arg1,arg2），可多次指定；与 routes.json 的 mcp_servers 合并",
+    )
+    p.add_argument(
+        "--list-routes",
+        action="store_true",
+        help="列出路由矩阵配置并退出",
+    )
     return p
 
 
@@ -150,6 +166,28 @@ def _resolve_plugin_dir(args: argparse.Namespace, config_dir: Path) -> Path | No
     return default if default.is_dir() else None
 
 
+def _resolve_routes_file(args: argparse.Namespace, config_dir: Path) -> Path | None:
+    if args.routes:
+        return Path(args.routes)
+    default = config_dir / "routes.json"
+    return default if default.is_file() else None
+
+
+def _resolve_mcp_servers(args: argparse.Namespace) -> list | None:
+    if not args.mcp_server:
+        return None
+    from .routing import MCPServer
+
+    servers = []
+    for spec in args.mcp_server:
+        if "=" not in spec:
+            continue
+        name, rest = spec.split("=", 1)
+        parts = rest.split(",")
+        servers.append(MCPServer(name=name, command=parts[0], args=parts[1:]))
+    return servers or None
+
+
 def _list_skills(skill_dir: Path | None) -> int:
     if skill_dir is None:
         print("未找到 skill 目录（可用 --skill-dir 指定）。")
@@ -166,6 +204,26 @@ def _list_skills(skill_dir: Path | None) -> int:
     for s in load.skills:
         state = "启用" if s.enabled else "禁用"
         print(f"  - {s.name} [{state}] {s.description}")
+    return 0
+
+
+def _list_routes(routes_file: Path | None) -> int:
+    if routes_file is None:
+        print("未找到 routes.json（可用 --routes 指定）。")
+        return 0
+    from .routing import RoutingMatrix
+
+    matrix = RoutingMatrix.load(routes_file)
+    print(f"路由矩阵：{routes_file}")
+    if not matrix.routes:
+        print("（无路由）")
+    for r in matrix.routes:
+        state = "启用" if r.enabled else "禁用"
+        print(f"  [{state}] {r.trigger} → {r.provider}:{r.target} (inject={r.inject}, prio={r.priority})")
+    if matrix.mcp_servers:
+        print("MCP 提供方：")
+        for s in matrix.mcp_servers:
+            print(f"  + {s.name}  {s.command} { ' '.join(s.args)}")
     return 0
 
 
@@ -298,6 +356,8 @@ def _run_cli(args: argparse.Namespace, config_dir: Path) -> int:
         max_tokens=args.max_tokens,
         provider=args.provider or None,
         api_key_cmd=args.api_key_cmd or None,
+        routes_file=_resolve_routes_file(args, config_dir),
+        mcp_servers=_resolve_mcp_servers(args),
     )
     print(BANNER)
     print(f"配置来源: {', '.join(config.sources)}")
@@ -336,6 +396,8 @@ def _run_web(args: argparse.Namespace, config_dir: Path) -> int:
         max_tokens=args.max_tokens,
         provider=args.provider or None,
         api_key_cmd=args.api_key_cmd or None,
+        routes_file=_resolve_routes_file(args, config_dir),
+        mcp_servers=_resolve_mcp_servers(args),
     )
     print(f"Vinf Agent Web 版已启动：http://{args.host}:{args.port}")
     print("记忆留在本机（PrivateCore），模型仅做外网耗材。Ctrl+C 停止。")
@@ -377,6 +439,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.list_plugins:
         return _list_plugins(_resolve_plugin_dir(args, config_dir))
+
+    if args.list_routes:
+        return _list_routes(_resolve_routes_file(args, config_dir))
 
     if args.list_providers:
         return _list_providers()

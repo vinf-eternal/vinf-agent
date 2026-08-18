@@ -1,0 +1,35 @@
+{
+  "routes": [
+    {
+      "trigger": "周报|weekly report|周计划",
+      "provider": "skill",
+      "target": "weekly_report",
+      "priority": 90,
+      "inject": "pre_turn",
+      "note": "命中周报意图 → 临时注入 weekly_report skill 规则"
+    },
+    {
+      "trigger": "召唤|自指循环|summon|自省|自检|status",
+      "provider": "mcp",
+      "target": "sl0-mcp",
+      "priority": 80,
+      "inject": "pre_turn",
+      "note": "命中自指循环意图 → 提示 sl0-mcp 工具可用"
+    },
+    {
+      "trigger": "召唤|自指循环|summon|自省|自检|status",
+      "provider": "mcp",
+      "target": "sl0-mcp",
+      "priority": 85,
+      "inject": "tool",
+      "note": "sl0-mcp 工具门控：未命中自指触发词时其工具拒绝执行"
+    }
+  ],
+  "mcp_servers": [
+    {
+      "name": "sl0-mcp",
+      "command": "python",
+      "args": ["-m", "sl0_mcp.mcp_stdio_adapter", "--root", "./selfloop_mcp_data"]
+    }
+  ]
+}

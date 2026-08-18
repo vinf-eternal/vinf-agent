@@ -15,6 +15,7 @@ from typing import Callable, Iterator
 from .filter import OuterFilter
 from .llm import LLMClient, LLMResponse, ToolCall
 from .memory_gate import MemoryGate
+from .routing import RoutingMatrix, INJECT_PRE_TURN, INJECT_TOOL
 from .tools import ToolRegistry
 
 
@@ -36,6 +37,8 @@ class AgentLoop:
         system_prompt: str = "",
         on_event: Callable[[Event], None] | None = None,
         max_inner_iterations: int = 20,
+        router: RoutingMatrix | None = None,
+        route_resolver=None,
     ):
         self.llm = llm
         self.tools = tools
@@ -44,6 +47,8 @@ class AgentLoop:
         self.system_prompt = system_prompt
         self.on_event = on_event or (lambda e: None)
         self.max_inner_iterations = max_inner_iterations
+        self.router = router
+        self.route_resolver = route_resolver
         self._events_out: list[Event] | None = None
 
     def _emit(self, etype: str, **data) -> None:
@@ -95,6 +100,21 @@ class AgentLoop:
                 )
                 self._emit("tool_result", tool=c.name, ok=False, error="unknown_tool")
                 continue
+            # 路由门控：被 tool 路由管理的工具，未命中本轮触发则拒绝
+            if (
+                self.router is not None
+                and c.name in self.router.routed_tool_names()
+                and c.name not in self._active_tools
+            ):
+                backfills.append(
+                    {
+                        "role": "tool",
+                        "tool_call_id": c.id,
+                        "content": f"[未激活工具] {c.name} 未被本轮触发信号路由放行",
+                    }
+                )
+                self._emit("tool_result", tool=c.name, ok=False, error="routed_inactive")
+                continue
             r = tool.fn(c.arguments)
             backfills.append(
                 {
@@ -125,8 +145,19 @@ class AgentLoop:
     def _run_turn_impl(self, user_input: str, messages: list[dict] | None) -> LLMResponse:
         messages = messages or []
         cleaned = self.outer_filter.filter(user_input)
+        self._active_tools: set[str] = (
+            self.router.active_tools(cleaned) if self.router is not None else set()
+        )
         self._emit("turn_start", input_len=len(cleaned))
         messages.append({"role": "user", "content": cleaned})
+
+        # 路由矩阵：命中 pre_turn 路由 → 本轮临时注入（仅此回合）
+        if self.router is not None and self.route_resolver is not None:
+            hits = self.router.pre_turn_routes(cleaned)
+            injected = self.router.render(hits, self.route_resolver)
+            if injected:
+                self._emit("route_match", hits=[r.target for r in hits])
+                messages.append({"role": "system", "content": f"<routing_injection>\n{injected}\n</routing_injection>"})
 
         response = self._call(messages)
         if response.stop_reason in ("error", "aborted"):

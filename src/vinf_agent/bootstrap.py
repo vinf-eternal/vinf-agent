@@ -9,10 +9,12 @@ from .config import AgentConfig, ConfigLoader
 from .filter import OuterFilter
 from .llm import LLMClient, OpenAIClient
 from .memory_gate import MemoryGate
+from .mcp_client import build_mcp_tools
 from .plugins import load_plugins, render_plugin_prompts
 from .providers import resolve_provider
+from .routing import RoutingMatrix, Route
 from .skills import load_skills, render_skills_block
-from .tools import ToolRegistry, build_tools
+from .tools import Tool, ToolRegistry, ToolResult, build_tools
 
 
 class MissingApiKeyError(RuntimeError):
@@ -81,6 +83,83 @@ def build_api_key_cmd_resolver(cmd: str) -> Callable[[], str]:
     return resolve
 
 
+def build_routing_matrix(
+    routes_file: Path | None,
+    skill_dir: Path | None,
+    plugin_result,
+    mcp_servers: list | None = None,
+) -> tuple[RoutingMatrix, dict, dict, Callable]:
+    """从 routes.json 构建路由矩阵，装配四 provider 的 resolver.
+
+    resolver 把 Route 渲染为实际注入文本：
+      - skill   → SKILL.md 正文
+      - plugin  → 插件注册的 prompt_parts
+      - mcp     → 该 MCP 服务器的工具清单提示
+      - agent   → 人格描述（预留，未命中时返回空）
+    MCP 服务器由矩阵声明（含 sl0-mcp 这类内置 stdio server）。
+
+    返回 (matrix, tool_specs, clients, resolve)。
+    """
+    matrix = RoutingMatrix.load(routes_file) if routes_file else RoutingMatrix()
+    if mcp_servers:
+        for s in mcp_servers:
+            if s.name not in {m.name for m in matrix.mcp_servers}:
+                matrix.mcp_servers.append(s)
+
+    skills: dict[str, str] = {}
+    if skill_dir is not None:
+        load = load_skills(skill_dir)
+        skills = {s.name: s.render() for s in load.skills if s.enabled}
+    plugin_prompts: dict[str, list[str]] = {}
+    if plugin_result is not None:
+        plugin_prompts = plugin_result.plugin_prompts or {}
+
+    clients: dict[str, object] = {}
+    tool_specs: dict[str, dict] = {}
+    if matrix.mcp_servers:
+        mcp_defs = [
+            (s.name, s.command, s.args) for s in matrix.mcp_servers
+        ]
+        clients, tool_specs = build_mcp_tools(mcp_defs)
+        for name, spec in tool_specs.items():
+            server = spec.get("_server")
+            client = clients.get(server)
+            if client is not None:
+                spec["_call"] = (
+                    lambda cl, nm: (
+                        lambda args: ToolResult(
+                            tool=nm, ok=True, output=cl.call_tool(nm, args)
+                        )
+                    )
+                )(client, name)
+        # 服务器 target → 具体工具名绑定（tool 门控判定需要）
+        for s in matrix.mcp_servers:
+            tools_of = [
+                name for name, spec in tool_specs.items() if spec.get("_server") == s.name
+            ]
+            matrix.bind_server_tools(s.name, tools_of)
+
+    def resolve(route: Route) -> str:
+        if route.provider == "skill":
+            return skills.get(route.target, "")
+        if route.provider == "plugin":
+            parts = plugin_prompts.get(route.target, [])
+            return "\n\n".join(parts)
+        if route.provider == "mcp":
+            tools = [k for k, v in tool_specs.items() if v.get("_server") == route.target]
+            if not tools:
+                return ""
+            return (
+                f"MCP 服务器 {route.target} 提供工具：{', '.join(sorted(tools))}\n"
+                f"按需调用，参数遵循工具 schema。"
+            )
+        if route.provider == "agent":
+            return ""  # 预留：子 Agent 人格描述注入
+        return ""
+
+    return matrix, tool_specs, clients, resolve
+
+
 def build_agent(
     config_dir: Path,
     api_key: str,
@@ -95,6 +174,8 @@ def build_agent(
     max_tokens: int = 2048,
     provider: str | None = None,
     api_key_cmd: str | None = None,
+    routes_file: Path | None = None,
+    mcp_servers: list | None = None,
 ) -> tuple[AgentLoop, AgentConfig, MemoryGate, ToolRegistry]:
     """装配完整 Agent（config → gate → tools → plugins → llm → loop）.
 
@@ -131,9 +212,24 @@ def build_agent(
     tools = build_tools(gate)
 
     plugin_prompt_parts: list[str] = []
+    plugin_result = None
     if plugin_dir is not None:
         plugin_result = load_plugins(plugin_dir, tools)
         plugin_prompt_parts = plugin_result.prompt_parts
+
+    matrix, mcp_tool_specs, mcp_clients, resolve = build_routing_matrix(
+        routes_file, skill_dir, plugin_result, mcp_servers
+    )
+    for name, spec in mcp_tool_specs.items():
+        if tools.get(name) is None and callable(spec.get("_call")):
+            tools.register(
+                Tool(
+                    name=name,
+                    fn=spec["_call"],
+                    description=spec.get("description", ""),
+                    parameters=spec.get("parameters", {}),
+                )
+            )
 
     key_resolver = None
     if provider:
@@ -170,5 +266,15 @@ def build_agent(
         outer_filter=outer_filter or OuterFilter(),
         system_prompt=system_text,
         on_event=on_event or (lambda e: None),
+        router=matrix if matrix.routes or matrix.mcp_servers else None,
+        route_resolver=resolve if (matrix.routes or matrix.mcp_servers) else None,
     )
     return loop, config, gate, tools
+
+
+# sl0-mcp：V∞ 自指循环 MCP server（stdio），作为矩阵内置能力提供方
+SL0_MCP_SERVER = (
+    "sl0-mcp",
+    "python",
+    ["-m", "sl0_mcp.mcp_stdio_adapter", "--root", "./selfloop_mcp_data"],
+)
