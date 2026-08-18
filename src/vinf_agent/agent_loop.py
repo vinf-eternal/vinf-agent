@@ -184,10 +184,15 @@ class AgentLoop:
         self._emit("turn_end", stop_reason=response.stop_reason)
         return response
 
-    def run_session(self, input_provider: Callable[[], str | None]) -> Iterator[LLMResponse]:
+    def run_session(
+        self,
+        input_provider: Callable[[], str | None],
+        on_turn: Callable[[str, LLMResponse, list[Event]], None] | None = None,
+    ) -> Iterator[LLMResponse]:
         """外环：持续收集用户输入（steering 可打断），产出完整回复.
 
         input_provider 每次被调用返回一条用户输入；返回 None 表示会话结束。
+        on_turn 可选回调（user_input, response, events），用于档案室落档（archive.py）。
         yield 每条用户输入对应的完整回复（含内环工具执行后的最终生成）。
         """
         self._emit("agent_start")
@@ -201,7 +206,10 @@ class AgentLoop:
             user_input = input_provider()
             if user_input is None:
                 break
-            response = self.run_turn(user_input, messages)
+            events: list[Event] = []
+            response = self.run_turn(user_input, messages, events_out=events)
+            if on_turn is not None:
+                on_turn(user_input, response, events)
             yield response
             if response.stop_reason in ("error", "aborted"):
                 break

@@ -137,6 +137,16 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="列出路由矩阵配置并退出",
     )
+    p.add_argument(
+        "--archive-dir",
+        default=os.environ.get("VINF_ARCHIVE_DIR", ""),
+        help="档案室目录（默认 <config>/archive；每次对话自动落档，带 record_id + 时间戳）",
+    )
+    p.add_argument(
+        "--list-archives",
+        action="store_true",
+        help="列出全部会话档案（回溯用）并退出",
+    )
     return p
 
 
@@ -342,6 +352,45 @@ def _logout(args: argparse.Namespace) -> int:
     return 0
 
 
+def _resolve_archive_dir(args: argparse.Namespace, config_dir: Path) -> Path:
+    if args.archive_dir:
+        return Path(args.archive_dir)
+    return config_dir / "archive"
+
+
+def _list_archives(archive_dir: Path) -> int:
+    from .archive import list_sessions
+
+    sessions = list_sessions(archive_dir)
+    print(f"档案室：{archive_dir}")
+    if not sessions:
+        print("（暂无会话档案）")
+        return 0
+    for d in sessions:
+        meta_file = d / "session.json"
+        summary_file = d / "summary.json"
+        if not meta_file.is_file():
+            print(f"  {d.name}  （无元数据）")
+            continue
+        import json as _json
+
+        meta = _json.loads(meta_file.read_text(encoding="utf-8"))
+        summary = {}
+        if summary_file.is_file():
+            summary = _json.loads(summary_file.read_text(encoding="utf-8"))
+        print(
+            f"  {meta['session_id']:<24} {meta['started_iso']}  "
+            f"回合={meta['turn_count']:<3} 模型={meta.get('model','')}  "
+            f"record_id={meta['record_id']}"
+        )
+        if summary.get("routes_hit"):
+            print(f"     路由命中: {summary['routes_hit']}")
+        if summary.get("tool_calls"):
+            print(f"     工具调用: {summary['tool_calls']}")
+    print(f"\n共 {len(sessions)} 个会话档案。可用 record_id 回溯（archive/sess_*/turns.jsonl）。")
+    return 0
+
+
 def _run_cli(args: argparse.Namespace, config_dir: Path) -> int:
     _maybe_onboard(config_dir)
     loop, config, _gate, _tools = build_agent(
@@ -362,20 +411,64 @@ def _run_cli(args: argparse.Namespace, config_dir: Path) -> int:
     print(BANNER)
     print(f"配置来源: {', '.join(config.sources)}")
 
+    from .archive import SessionArchive, TurnRecord
+
+    archive = SessionArchive(
+        _resolve_archive_dir(args, config_dir),
+        model=args.model,
+        provider=args.provider or "",
+    )
+    print(f"档案室: 本会话 record_id={archive.session.record_id} → {archive.dir}")
+
     def input_provider():
         try:
             return input("你 > ").strip() or None
         except (EOFError, KeyboardInterrupt):
             return None
 
-    for response in loop.run_session(input_provider):
+    def on_turn(user_input: str, response, events: list) -> None:
+        tool_calls: list[dict] = []
+        routes_hit: list[str] = []
+        for ev in events:
+            if ev.type == "tool_call_start":
+                for nm in ev.data.get("names", []):
+                    tool_calls.append(
+                        {"name": nm, "ok": None, "output": "", "error": ""}
+                    )
+            elif ev.type == "tool_result":
+                nm = ev.data.get("tool", "")
+                entry = next((t for t in tool_calls if t["name"] == nm), None)
+                if entry is not None:
+                    entry["ok"] = bool(ev.data.get("ok", True))
+                    entry["output"] = str(ev.data.get("output", "") or "")[:500]
+                    entry["error"] = ev.data.get("error", "")
+            elif ev.type == "route_match":
+                routes_hit.extend(ev.data.get("hits", []))
+        archive.append_turn(
+            TurnRecord(
+                turn_id="",
+                ts=time.time(),
+                iso="",
+                user_input=user_input,
+                response=response.content,
+                stop_reason=response.stop_reason,
+                model=args.model,
+                routes_hit=routes_hit,
+                tool_calls=tool_calls,
+            )
+        )
+
+    for response in loop.run_session(input_provider, on_turn=on_turn):
         print(f"Vinf > {response.content}")
         if response.stop_reason in ("error", "aborted"):
             break
         if response.content.strip().lower() in ("exit", "退出"):
             break
 
-    print("会话结束。记忆已持久化于本地。")
+    summary_path = archive.finalize()
+    print(f"会话结束。档案已落盘：{summary_path}")
+    print(f"record_id={archive.session.record_id} 回合={archive.session.turn_count} 回溯用 --list-archives")
+    print("记忆已持久化于本地。")
     return 0
 
 
@@ -442,6 +535,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.list_routes:
         return _list_routes(_resolve_routes_file(args, config_dir))
+
+    if args.list_archives:
+        return _list_archives(_resolve_archive_dir(args, config_dir))
 
     if args.list_providers:
         return _list_providers()
