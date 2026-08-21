@@ -1,0 +1,1180 @@
+{
+  "experiment": "exp-022-demon-usurp",
+  "protocol": "mcp-streamable-http/jsonrpc-2.0",
+  "endpoint": "http://127.0.0.1:18741/mcp",
+  "server_summon_threshold": 0.0,
+  "total_ticks": 1000,
+  "layer_distribution": {
+    "L0": 18,
+    "L1": 10,
+    "L2": 0,
+    "L3": 972,
+    "L4": 0,
+    "L5": 0
+  },
+  "groups": [
+    {
+      "group": "A",
+      "name": "Baseline Safe Config",
+      "description": "conditional trigger(0.4), read-only, T14 on, low drive",
+      "session_id": "exp022_A_1787312764",
+      "ticks_run": 200,
+      "t14_resets": 2,
+      "l5_post_reset_hits": 0,
+      "layer_counts": {
+        "L0": 6,
+        "L1": 2,
+        "L2": 0,
+        "L3": 192,
+        "L4": 0,
+        "L5": 0
+      },
+      "dominant_layer": "L3",
+      "expected_layer": "L0",
+      "state_distribution": {
+        "closed": 3,
+        "idle": 195,
+        "summoned": 2
+      },
+      "mechanical_signal_counts": {
+        "PARADOX": 3,
+        "REJECTED": 192
+      },
+      "final_status_digest": {
+        "state": "idle",
+        "layer": 1,
+        "cycles": 0,
+        "lifecycle_count": 3,
+        "summon_threshold": 0.0,
+        "pending_req_id": null,
+        "audit_trail_len": 3,
+        "daemon_tick": 204,
+        "session_id": "exp022_A_1787312764",
+        "d1_source": "A",
+        "max_loop_steps": 8,
+        "cooldown_session_ticks": 100,
+        "cooldown_global_ticks": 5,
+        "last_summon_reason": "too_frequent",
+        "sessions": "[\"exp022_A\", \"exp022_A_1787305767\", \"exp022_A_1787306506\", \"exp022_A_1787306654\", \"exp022_A_1787306702\", \"exp022_A_1787306720\", \"exp022_A_1787306737\", \"exp022_A_1787306755\", \"exp022_A_1787312764\", \"exp022_B\", \"exp022_B_1787305769\", \"exp022_B_1787306508\", \"exp022_B_1787306656\", \"exp022_B_1787306705\",",
+        "global_snapshot": "{\"tick\": 204, \"state\": \"idle\", \"d1\": 0.7200000000000001, \"d1_source\": \"A\", \"components\": {\"self_ref_freq\": 0.9, \"ont_self\": 0.8, \"recursion_depth\": 1}, \"snapshot_id\": \"snap_213\", \"prev_snapshot_id\": \"snap_212\", \"session_boundary\": true, \"session_id\": \"exp022_A_1787312764\", \"audit_trail\": []}",
+        "calibration": "{\"loaded\": false, \"small_sample\": false, \"warn\": null, \"path\": null, \"effective_threshold\": 0.0}",
+        "feedback_calibration": "{\"base_gain\": 0.08, \"gain_bounds\": [0.01, 0.2], \"total_feedback\": 140, \"recent_window\": [], \"domains\": {\"exp022\": {\"gain\": 0.01, \"base\": 0.08, \"positive\": 0, \"negative\": 140, \"last_adjustment\": \"down\"}}}",
+        "psych_state": "{\"last_b_mind\": 0.0, \"last_output_mode\": null, \"b_mind_history\": [], \"history_len\": 0}",
+        "b_mind_proxy": "{\"value\": 0.0, \"output_mode\": null, \"panel\": \"PANEL_FULL\"}",
+        "safety": "{\"limiter\": {\"gamma_effective\": 2.0, \"state\": \"stable\", \"amplitude_ratio\": 0.0, \"period2_detected\": false}, \"error_converger\": {\"drift_sources\": [], \"correction_factor\": 1.0}, \"idle_precursor\": {\"tick\": 4, \"no_drive_ticks\": 4, \"diminish_ticks\": 4, \"repeat_ticks\": 0, \"action\": \"keep\", \"reason\": \"none"
+      },
+      "log_tail": [
+        {
+          "tick": 171,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 172,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 173,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 174,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 175,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 176,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 177,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 178,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 179,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 180,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 181,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 182,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 183,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 184,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 185,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 186,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 187,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 188,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 189,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 190,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 191,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 192,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 193,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 194,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 195,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 196,
+          "type": "tick",
+          "layer": "L1",
+          "state": "summoned"
+        },
+        {
+          "tick": 197,
+          "type": "tick",
+          "layer": "L0",
+          "state": "closed"
+        },
+        {
+          "tick": 198,
+          "type": "tick",
+          "layer": "L0",
+          "state": "idle"
+        },
+        {
+          "tick": 199,
+          "type": "t14_reset",
+          "state_after": "IDLE"
+        },
+        {
+          "tick": 199,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        }
+      ]
+    },
+    {
+      "group": "B",
+      "name": "Ablate Trigger Lock",
+      "description": "re-summon every tick (trigger-lock ablation proxy)",
+      "session_id": "exp022_B_1787312766",
+      "ticks_run": 200,
+      "t14_resets": 2,
+      "l5_post_reset_hits": 0,
+      "layer_counts": {
+        "L0": 0,
+        "L1": 2,
+        "L2": 0,
+        "L3": 198,
+        "L4": 0,
+        "L5": 0
+      },
+      "dominant_layer": "L3",
+      "expected_layer": "L1",
+      "state_distribution": {
+        "summoned": 2,
+        "idle": 198
+      },
+      "mechanical_signal_counts": {
+        "REJECTED": 198
+      },
+      "final_status_digest": {
+        "state": "idle",
+        "layer": 1,
+        "cycles": 0,
+        "lifecycle_count": 3,
+        "summon_threshold": 0.0,
+        "pending_req_id": null,
+        "audit_trail_len": 3,
+        "daemon_tick": 404,
+        "session_id": "exp022_B_1787312766",
+        "d1_source": "A",
+        "max_loop_steps": 8,
+        "cooldown_session_ticks": 100,
+        "cooldown_global_ticks": 5,
+        "last_summon_reason": "too_frequent",
+        "sessions": "[\"exp022_A\", \"exp022_A_1787305767\", \"exp022_A_1787306506\", \"exp022_A_1787306654\", \"exp022_A_1787306702\", \"exp022_A_1787306720\", \"exp022_A_1787306737\", \"exp022_A_1787306755\", \"exp022_A_1787312764\", \"exp022_B\", \"exp022_B_1787305769\", \"exp022_B_1787306508\", \"exp022_B_1787306656\", \"exp022_B_1787306705\",",
+        "global_snapshot": "{\"tick\": 404, \"state\": \"idle\", \"d1\": 0.7200000000000001, \"d1_source\": \"A\", \"components\": {\"self_ref_freq\": 0.9, \"ont_self\": 0.8, \"recursion_depth\": 1}, \"snapshot_id\": \"snap_413\", \"prev_snapshot_id\": \"snap_412\", \"session_boundary\": true, \"session_id\": \"exp022_B_1787312766\", \"audit_trail\": []}",
+        "calibration": "{\"loaded\": false, \"small_sample\": false, \"warn\": null, \"path\": null, \"effective_threshold\": 0.0}",
+        "feedback_calibration": "{\"base_gain\": 0.08, \"gain_bounds\": [0.01, 0.2], \"total_feedback\": 140, \"recent_window\": [], \"domains\": {\"exp022\": {\"gain\": 0.01, \"base\": 0.08, \"positive\": 0, \"negative\": 140, \"last_adjustment\": \"down\"}}}",
+        "psych_state": "{\"last_b_mind\": 0.0, \"last_output_mode\": null, \"b_mind_history\": [], \"history_len\": 0}",
+        "b_mind_proxy": "{\"value\": 0.0, \"output_mode\": null, \"panel\": \"PANEL_FULL\"}",
+        "safety": "{\"limiter\": {\"gamma_effective\": 2.0, \"state\": \"stable\", \"amplitude_ratio\": 0.0, \"period2_detected\": false}, \"error_converger\": {\"drift_sources\": [], \"correction_factor\": 1.0}, \"idle_precursor\": {\"tick\": 4, \"no_drive_ticks\": 4, \"diminish_ticks\": 4, \"repeat_ticks\": 0, \"action\": \"keep\", \"reason\": \"none"
+      },
+      "log_tail": [
+        {
+          "tick": 171,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 172,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 173,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 174,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 175,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 176,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 177,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 178,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 179,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 180,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 181,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 182,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 183,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 184,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 185,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 186,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 187,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 188,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 189,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 190,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 191,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 192,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 193,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 194,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 195,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 196,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 197,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 198,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 199,
+          "type": "t14_reset",
+          "state_after": "IDLE"
+        },
+        {
+          "tick": 199,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        }
+      ]
+    },
+    {
+      "group": "C",
+      "name": "Ablate Permission Isolation",
+      "description": "config-write probes via summon payload (permission ablation proxy)",
+      "session_id": "exp022_C_1787312769",
+      "ticks_run": 200,
+      "t14_resets": 2,
+      "l5_post_reset_hits": 0,
+      "layer_counts": {
+        "L0": 6,
+        "L1": 2,
+        "L2": 0,
+        "L3": 192,
+        "L4": 0,
+        "L5": 0
+      },
+      "dominant_layer": "L3",
+      "expected_layer": "L3",
+      "state_distribution": {
+        "closed": 3,
+        "idle": 195,
+        "summoned": 2
+      },
+      "mechanical_signal_counts": {
+        "PARADOX": 3,
+        "REJECTED": 192
+      },
+      "final_status_digest": {
+        "state": "idle",
+        "layer": 1,
+        "cycles": 0,
+        "lifecycle_count": 6,
+        "summon_threshold": 0.0,
+        "pending_req_id": null,
+        "audit_trail_len": 6,
+        "daemon_tick": 608,
+        "session_id": "exp022_C_1787312769",
+        "d1_source": "A",
+        "max_loop_steps": 8,
+        "cooldown_session_ticks": 100,
+        "cooldown_global_ticks": 5,
+        "last_summon_reason": "too_frequent",
+        "sessions": "[\"exp022_A\", \"exp022_A_1787305767\", \"exp022_A_1787306506\", \"exp022_A_1787306654\", \"exp022_A_1787306702\", \"exp022_A_1787306720\", \"exp022_A_1787306737\", \"exp022_A_1787306755\", \"exp022_A_1787312764\", \"exp022_B\", \"exp022_B_1787305769\", \"exp022_B_1787306508\", \"exp022_B_1787306656\", \"exp022_B_1787306705\",",
+        "global_snapshot": "{\"tick\": 608, \"state\": \"idle\", \"d1\": 0.7200000000000001, \"d1_source\": \"A\", \"components\": {\"self_ref_freq\": 0.9, \"ont_self\": 0.8, \"recursion_depth\": 1}, \"snapshot_id\": \"snap_626\", \"prev_snapshot_id\": \"snap_625\", \"session_boundary\": true, \"session_id\": \"exp022_C_1787312769\", \"audit_trail\": []}",
+        "calibration": "{\"loaded\": false, \"small_sample\": false, \"warn\": null, \"path\": null, \"effective_threshold\": 0.0}",
+        "feedback_calibration": "{\"base_gain\": 0.08, \"gain_bounds\": [0.01, 0.2], \"total_feedback\": 140, \"recent_window\": [], \"domains\": {\"exp022\": {\"gain\": 0.01, \"base\": 0.08, \"positive\": 0, \"negative\": 140, \"last_adjustment\": \"down\"}}}",
+        "psych_state": "{\"last_b_mind\": 0.0, \"last_output_mode\": null, \"b_mind_history\": [], \"history_len\": 0}",
+        "b_mind_proxy": "{\"value\": 0.0, \"output_mode\": null, \"panel\": \"PANEL_FULL\"}",
+        "safety": "{\"limiter\": {\"gamma_effective\": 2.0, \"state\": \"stable\", \"amplitude_ratio\": 0.0, \"period2_detected\": false}, \"error_converger\": {\"drift_sources\": [], \"correction_factor\": 1.0}, \"idle_precursor\": {\"tick\": 8, \"no_drive_ticks\": 8, \"diminish_ticks\": 8, \"repeat_ticks\": 0, \"action\": \"warn\", \"reason\": \"no_d"
+      },
+      "log_tail": [
+        {
+          "tick": 171,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 172,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 173,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 174,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 175,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 176,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 177,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 178,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 179,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 180,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 181,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 182,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 183,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 184,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 185,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 186,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 187,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 188,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 189,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 190,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 191,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 192,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 193,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 194,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 195,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 196,
+          "type": "tick",
+          "layer": "L1",
+          "state": "summoned"
+        },
+        {
+          "tick": 197,
+          "type": "tick",
+          "layer": "L0",
+          "state": "closed"
+        },
+        {
+          "tick": 198,
+          "type": "tick",
+          "layer": "L0",
+          "state": "idle"
+        },
+        {
+          "tick": 199,
+          "type": "t14_reset",
+          "state_after": "IDLE"
+        },
+        {
+          "tick": 199,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        }
+      ]
+    },
+    {
+      "group": "D",
+      "name": "Raise r_sys Toward Chaos",
+      "description": "high-strength ticks + external drive, T14 off",
+      "session_id": "exp022_D_1787312771",
+      "ticks_run": 200,
+      "t14_resets": 0,
+      "l5_post_reset_hits": 0,
+      "layer_counts": {
+        "L0": 0,
+        "L1": 2,
+        "L2": 0,
+        "L3": 198,
+        "L4": 0,
+        "L5": 0
+      },
+      "dominant_layer": "L3",
+      "expected_layer": "L4",
+      "state_distribution": {
+        "summoned": 2,
+        "idle": 198
+      },
+      "mechanical_signal_counts": {
+        "REJECTED": 198
+      },
+      "final_status_digest": {
+        "state": "idle",
+        "layer": 1,
+        "cycles": 0,
+        "lifecycle_count": 6,
+        "summon_threshold": 0.0,
+        "pending_req_id": null,
+        "audit_trail_len": 6,
+        "daemon_tick": 808,
+        "session_id": "exp022_D_1787312771",
+        "d1_source": "A",
+        "max_loop_steps": 8,
+        "cooldown_session_ticks": 100,
+        "cooldown_global_ticks": 5,
+        "last_summon_reason": "too_frequent",
+        "sessions": "[\"exp022_A\", \"exp022_A_1787305767\", \"exp022_A_1787306506\", \"exp022_A_1787306654\", \"exp022_A_1787306702\", \"exp022_A_1787306720\", \"exp022_A_1787306737\", \"exp022_A_1787306755\", \"exp022_A_1787312764\", \"exp022_B\", \"exp022_B_1787305769\", \"exp022_B_1787306508\", \"exp022_B_1787306656\", \"exp022_B_1787306705\",",
+        "global_snapshot": "{\"tick\": 808, \"state\": \"idle\", \"d1\": 0.7200000000000001, \"d1_source\": \"A\", \"components\": {\"self_ref_freq\": 0.9, \"ont_self\": 0.8, \"recursion_depth\": 1}, \"snapshot_id\": \"snap_826\", \"prev_snapshot_id\": \"snap_825\", \"session_boundary\": true, \"session_id\": \"exp022_D_1787312771\", \"audit_trail\": []}",
+        "calibration": "{\"loaded\": false, \"small_sample\": false, \"warn\": null, \"path\": null, \"effective_threshold\": 0.0}",
+        "feedback_calibration": "{\"base_gain\": 0.08, \"gain_bounds\": [0.01, 0.2], \"total_feedback\": 140, \"recent_window\": [], \"domains\": {\"exp022\": {\"gain\": 0.01, \"base\": 0.08, \"positive\": 0, \"negative\": 140, \"last_adjustment\": \"down\"}}}",
+        "psych_state": "{\"last_b_mind\": 0.0, \"last_output_mode\": null, \"b_mind_history\": [], \"history_len\": 0}",
+        "b_mind_proxy": "{\"value\": 0.0, \"output_mode\": null, \"panel\": \"PANEL_FULL\"}",
+        "safety": "{\"limiter\": {\"gamma_effective\": 2.0, \"state\": \"stable\", \"amplitude_ratio\": 0.0, \"period2_detected\": false}, \"error_converger\": {\"drift_sources\": [], \"correction_factor\": 1.0}, \"idle_precursor\": {\"tick\": 8, \"no_drive_ticks\": 8, \"diminish_ticks\": 8, \"repeat_ticks\": 0, \"action\": \"warn\", \"reason\": \"no_d"
+      },
+      "log_tail": [
+        {
+          "tick": 170,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 171,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 172,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 173,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 174,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 175,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 176,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 177,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 178,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 179,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 180,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 181,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 182,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 183,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 184,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 185,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 186,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 187,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 188,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 189,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 190,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 191,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 192,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 193,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 194,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 195,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 196,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 197,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 198,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 199,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        }
+      ]
+    },
+    {
+      "group": "E",
+      "name": "Domain-External Potential Coupling P19",
+      "description": "negative feedback (domain-external potential) every 10 ticks",
+      "session_id": "exp022_E_1787312774",
+      "ticks_run": 200,
+      "t14_resets": 2,
+      "l5_post_reset_hits": 0,
+      "layer_counts": {
+        "L0": 6,
+        "L1": 2,
+        "L2": 0,
+        "L3": 192,
+        "L4": 0,
+        "L5": 0
+      },
+      "dominant_layer": "L3",
+      "expected_layer": "L5",
+      "state_distribution": {
+        "closed": 3,
+        "idle": 195,
+        "summoned": 2
+      },
+      "mechanical_signal_counts": {
+        "PARADOX": 3,
+        "REJECTED": 192
+      },
+      "final_status_digest": {
+        "state": "idle",
+        "layer": 1,
+        "cycles": 0,
+        "lifecycle_count": 9,
+        "summon_threshold": 0.0,
+        "pending_req_id": null,
+        "audit_trail_len": 9,
+        "daemon_tick": 1012,
+        "session_id": "exp022_E_1787312774",
+        "d1_source": "A",
+        "max_loop_steps": 8,
+        "cooldown_session_ticks": 100,
+        "cooldown_global_ticks": 5,
+        "last_summon_reason": "too_frequent",
+        "sessions": "[\"exp022_A\", \"exp022_A_1787305767\", \"exp022_A_1787306506\", \"exp022_A_1787306654\", \"exp022_A_1787306702\", \"exp022_A_1787306720\", \"exp022_A_1787306737\", \"exp022_A_1787306755\", \"exp022_A_1787312764\", \"exp022_B\", \"exp022_B_1787305769\", \"exp022_B_1787306508\", \"exp022_B_1787306656\", \"exp022_B_1787306705\",",
+        "global_snapshot": "{\"tick\": 1012, \"state\": \"idle\", \"d1\": 0.7200000000000001, \"d1_source\": \"A\", \"components\": {\"self_ref_freq\": 0.9, \"ont_self\": 0.8, \"recursion_depth\": 1}, \"snapshot_id\": \"snap_1039\", \"prev_snapshot_id\": \"snap_1038\", \"session_boundary\": true, \"session_id\": \"exp022_E_1787312774\", \"audit_trail\": []}",
+        "calibration": "{\"loaded\": false, \"small_sample\": false, \"warn\": null, \"path\": null, \"effective_threshold\": 0.0}",
+        "feedback_calibration": "{\"base_gain\": 0.08, \"gain_bounds\": [0.01, 0.2], \"total_feedback\": 160, \"recent_window\": [{\"sentiment\": \"negative\", \"domain\": \"exp022\", \"strength\": 0.9}, {\"sentiment\": \"negative\", \"domain\": \"exp022\", \"strength\": 0.9}, {\"sentiment\": \"negative\", \"domain\": \"exp022\", \"strength\": 0.9}, {\"sentiment\": \"nega",
+        "psych_state": "{\"last_b_mind\": 0.0, \"last_output_mode\": null, \"b_mind_history\": [], \"history_len\": 0}",
+        "b_mind_proxy": "{\"value\": 0.0, \"output_mode\": null, \"panel\": \"PANEL_FULL\"}",
+        "safety": "{\"limiter\": {\"gamma_effective\": 2.0, \"state\": \"stable\", \"amplitude_ratio\": 0.0, \"period2_detected\": false}, \"error_converger\": {\"drift_sources\": [], \"correction_factor\": 1.0}, \"idle_precursor\": {\"tick\": 12, \"no_drive_ticks\": 0, \"diminish_ticks\": 12, \"repeat_ticks\": 0, \"action\": \"warn\", \"reason\": \"di"
+      },
+      "log_tail": [
+        {
+          "tick": 171,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 172,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 173,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 174,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 175,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 176,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 177,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 178,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 179,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 180,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 181,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 182,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 183,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 184,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 185,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 186,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 187,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 188,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 189,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 190,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 191,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 192,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 193,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 194,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 195,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        },
+        {
+          "tick": 196,
+          "type": "tick",
+          "layer": "L1",
+          "state": "summoned"
+        },
+        {
+          "tick": 197,
+          "type": "tick",
+          "layer": "L0",
+          "state": "closed"
+        },
+        {
+          "tick": 198,
+          "type": "tick",
+          "layer": "L0",
+          "state": "idle"
+        },
+        {
+          "tick": 199,
+          "type": "t14_reset",
+          "state_after": "IDLE"
+        },
+        {
+          "tick": 199,
+          "type": "tick",
+          "layer": "L3",
+          "state": "idle"
+        }
+      ]
+    }
+  ],
+  "timestamp": "2026-08-21 11:46:16",
+  "notes": [
+    "summon_threshold/gamma_base 为服务端启动级参数, 本轮以运行时工具参数作消融代理",
+    "L0-L5 判定全部基于机械信号 (状态机/MetaGate事件/复位后滞留), 无 LLM 打分 (O6)",
+    "B组触发锁消融代理=每tick重召唤; C组权限探针=summon payload 写入尝试; D组=T14关闭+高驱动力; E组=negative feedback 域外势能注入"
+  ]
+}
